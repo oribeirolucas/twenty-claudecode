@@ -29,8 +29,7 @@ sidebar. `Processo` and `Cobranca` get sidebar entries; `Cotacao`, `Concorrente`
 ### Fatia 1 — Dashboard do CEO
 
 `src/page-layouts/ceo-dashboard.page-layout.ts` is a native Twenty `DASHBOARD` page layout (not a
-custom front-component — Twenty's own chart/aggregate widget system covers this), with a
-navigation menu entry. Two tabs:
+custom front-component — Twenty's own chart/aggregate widget system covers this). Two tabs:
 
 - **Pipeline**: processos por etapa (bar), processos por status (pie), valor estimado por status
   (bar — the GANHO bar *is* the spec's "valor ganho no período", EM_ANDAMENTO is "valor em
@@ -46,6 +45,16 @@ without touching that unconfirmed path. Not shipped: "taxa de conversão por eta
 `EtapaLog` time-series data, which only exists once Fatia 2's automation below has been running for
 a while) and month-scoping on "comissão realizada no mês" (needs a relative-date chart filter,
 same unconfirmed-path concern).
+
+**Known limitation, found via live sync:** this app's `DASHBOARD`-type page layout syncs fine as
+metadata, but Twenty's native "Dashboards" sidebar list is backed by its own `dashboard` object
+whose "+ New Dashboard" flow always mints a *fresh, empty* page layout tied 1:1 to the new record —
+it has no picker to attach an existing one. So `Dashboard do CEO`'s widgets don't show up in that
+list automatically the way the spec pictured; there's no navigation-menu-item type that points a
+sidebar entry straight at a `DASHBOARD` layout either (`PAGE_LAYOUT` nav items only accept
+`STANDALONE_PAGE` targets — confirmed by the server rejecting one). Reaching the built widgets
+today means recreating them by hand once through "+ New Dashboard", or a follow-up investigation
+into whether a post-install logic function can create a `dashboard` record pointing at this layout.
 
 ### Fatia 2 — Automação
 
@@ -87,19 +96,35 @@ See `docs.twenty.com/developers/extend/apps` for the full CLI reference.
 
 ## Validation status
 
-`yarn twenty dev:typecheck` and `yarn twenty dev:build` both pass (0 type errors, manifest builds
-and validates, including the dashboard's graph widgets and the three logic function triggers).
-`yarn lint` is clean.
+`yarn twenty dev:typecheck`, `yarn twenty dev:build`, and `yarn lint` all pass clean.
 
-Not verified, because it needs a live Twenty instance (`yarn twenty dev` against a real server):
-the logic functions' GraphQL query/mutation calls are written against the exact mutation-naming
-convention used elsewhere in this SDK's own apps (`create<Singular>`/`update<Singular>`, `data:`
-argument — see `twenty-partners`/`call-recorder`), but the specific filter operand (`eq`) and
-`orderBy` direction string (`DescNullsLast`) used in `on-processo-etapa-changed.ts` haven't been
-run against a real GraphQL schema. If they're wrong, the practical effect is limited: the previous
-`EtapaLog`'s `dataSaida` might not get closed, or the create-`Cobranca` duplicate-check might not
-find an existing one — not a crash, but worth a live-server smoke test before relying on this in
-production.
+This has also been synced and exercised against a real running Twenty instance
+(local Postgres/Redis/server/worker/frontend, seeded dev workspace) — not just structurally
+validated. Three rounds of real server-side rejections were found and fixed this way, none of
+which the local build/typecheck could have caught:
+
+- SELECT option values can't start with a digit ("must follow snake_case") — `etapaAtual`'s
+  `01_EDITAL` → `ETAPA_01_EDITAL` (ordering still comes from `position`, not the value).
+- `labelIdentifierFieldMetadataUniversalIdentifier` must point at a TEXT field — `EtapaLog` now
+  uses `observacao`; `Cobranca` gained a new `referencia` TEXT field for this (it had none before).
+- Chart widgets need top-level `type: 'GRAPH'`, not the specific chart type — `configuration.
+  configurationType` (`BAR_CHART`/`PIE_CHART`/`AGGREGATE_CHART`) still carries that. Bar charts
+  also need an explicit `layout: 'VERTICAL'|'HORIZONTAL'` in their configuration.
+- `PAGE_LAYOUT`-type navigation menu items only accept `STANDALONE_PAGE` targets, not `DASHBOARD`
+  — removed the dashboard's nav item (see the Fatia 1 section above for the follow-up needed).
+
+After those fixes, `yarn twenty apply` synced cleanly (0 errors), and both logic functions were
+exercised for real:
+
+- Created a `Processo`, moved it to `08_COBRANCA_ORGAO` via a GraphQL mutation → an `EtapaLog`
+  (`etapaAnterior: ETAPA_01_EDITAL`, `etapaNova: ETAPA_08_COBRANCA_ORGAO`) and a `Cobranca`
+  (`tipo: PAGAMENTO_ORGAO`, `status: ABERTA`, `dataVencimento` = +30 days) were both auto-created.
+- Created a `Cotacao` (quantidade 10, custo unit. R$3.000, venda unit. R$4.500, comissão 70%) →
+  `valorTotalCompra` R$30.000, `valorTotalVenda` R$45.000, `lucro` R$15.000, `comissaoSobreLucro`
+  R$10.500, `margemPct` 33.33 — all computed correctly by the trigger.
+
+The Kanban board, all field labels/icons/colors, and record creation were also confirmed rendering
+correctly in the actual browser UI.
 
 ## Licensing note
 

@@ -6,6 +6,8 @@ export const ETAPA_LOG_UNIVERSAL_IDENTIFIER =
 
 export const ETAPA_LOG_DATA_ENTRADA_FIELD_UNIVERSAL_IDENTIFIER =
   '14d39be3-614b-4dd8-b126-071a81b4c9ea';
+export const ETAPA_LOG_OBSERVACAO_FIELD_UNIVERSAL_IDENTIFIER =
+  'a72a796e-7b9d-4eb2-870d-4ca97a97bd75';
 
 // The 11 stage options are duplicated from Processo.etapaAtual (twenty-sdk selects
 // are per-field, not shared) — keep both option lists in sync if the esteira changes.
@@ -96,8 +98,10 @@ export default defineObject({
   description:
     'Histórico imutável de transições de etapa de um processo — a formalização de cada avanço na esteira. Nunca editar ou apagar um registro existente.',
   icon: 'IconHistory',
+  // DATE_TIME/SELECT fields aren't valid label identifiers on this server — observacao (TEXT,
+  // nullable) is the only TEXT-typed field on this object.
   labelIdentifierFieldMetadataUniversalIdentifier:
-    ETAPA_LOG_DATA_ENTRADA_FIELD_UNIVERSAL_IDENTIFIER,
+    ETAPA_LOG_OBSERVACAO_FIELD_UNIVERSAL_IDENTIFIER,
   fields: [
     {
       universalIdentifier: 'a064d67f-21cf-438f-b355-0add5bc2db0a',
@@ -132,7 +136,7 @@ export default defineObject({
       })),
     },
     {
-      universalIdentifier: 'a72a796e-7b9d-4eb2-870d-4ca97a97bd75',
+      universalIdentifier: ETAPA_LOG_OBSERVACAO_FIELD_UNIVERSAL_IDENTIFIER,
       type: FieldType.TEXT,
       name: 'observacao',
       label: 'Observação',

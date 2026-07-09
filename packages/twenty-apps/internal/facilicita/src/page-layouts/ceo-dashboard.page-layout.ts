@@ -40,11 +40,12 @@ export default definePageLayout({
         {
           universalIdentifier: 'd49a0f3a-1ac6-44bd-87e8-b84fb052d97d',
           title: 'Processos por Etapa',
-          type: 'BAR_CHART',
+          type: 'GRAPH',
           objectUniversalIdentifier: PROCESSO_UNIVERSAL_IDENTIFIER,
           gridPosition: { row: 0, column: 0, rowSpan: 2, columnSpan: 8 },
           configuration: {
             configurationType: 'BAR_CHART',
+            layout: 'VERTICAL',
             aggregateFieldMetadataUniversalIdentifier:
               PROCESSO_NOME_FIELD_UNIVERSAL_IDENTIFIER,
             aggregateOperation: AggregateOperations.COUNT,
@@ -55,7 +56,7 @@ export default definePageLayout({
         {
           universalIdentifier: '73c73189-00f9-48da-af22-2dfb980118e8',
           title: 'Processos por Status',
-          type: 'PIE_CHART',
+          type: 'GRAPH',
           objectUniversalIdentifier: PROCESSO_UNIVERSAL_IDENTIFIER,
           gridPosition: { row: 0, column: 8, rowSpan: 2, columnSpan: 4 },
           configuration: {
@@ -70,11 +71,12 @@ export default definePageLayout({
         {
           universalIdentifier: '5cc43876-9c95-4ffc-a41a-be295b13ce16',
           title: 'Valor Estimado por Status',
-          type: 'BAR_CHART',
+          type: 'GRAPH',
           objectUniversalIdentifier: PROCESSO_UNIVERSAL_IDENTIFIER,
           gridPosition: { row: 2, column: 0, rowSpan: 2, columnSpan: 12 },
           configuration: {
             configurationType: 'BAR_CHART',
+            layout: 'VERTICAL',
             aggregateFieldMetadataUniversalIdentifier:
               PROCESSO_VALOR_ESTIMADO_FIELD_UNIVERSAL_IDENTIFIER,
             aggregateOperation: AggregateOperations.SUM,
@@ -93,7 +95,7 @@ export default definePageLayout({
         {
           universalIdentifier: '3b8ce09f-0b81-406e-a8f6-85e76e7c73cc',
           title: 'Cobranças por Status',
-          type: 'PIE_CHART',
+          type: 'GRAPH',
           objectUniversalIdentifier: COBRANCA_UNIVERSAL_IDENTIFIER,
           gridPosition: { row: 0, column: 0, rowSpan: 2, columnSpan: 4 },
           configuration: {
@@ -108,11 +110,12 @@ export default definePageLayout({
         {
           universalIdentifier: '1bda5334-84eb-4dbe-b206-d65e38595818',
           title: 'Valor por Status de Cobrança',
-          type: 'BAR_CHART',
+          type: 'GRAPH',
           objectUniversalIdentifier: COBRANCA_UNIVERSAL_IDENTIFIER,
           gridPosition: { row: 0, column: 4, rowSpan: 2, columnSpan: 8 },
           configuration: {
             configurationType: 'BAR_CHART',
+            layout: 'VERTICAL',
             aggregateFieldMetadataUniversalIdentifier:
               COBRANCA_VALOR_FIELD_UNIVERSAL_IDENTIFIER,
             aggregateOperation: AggregateOperations.SUM,
@@ -123,11 +126,12 @@ export default definePageLayout({
         {
           universalIdentifier: '91ef9774-ae56-405f-a6fa-4bc4045f8c00',
           title: 'Valor por Tipo de Cobrança',
-          type: 'BAR_CHART',
+          type: 'GRAPH',
           objectUniversalIdentifier: COBRANCA_UNIVERSAL_IDENTIFIER,
           gridPosition: { row: 2, column: 0, rowSpan: 2, columnSpan: 8 },
           configuration: {
             configurationType: 'BAR_CHART',
+            layout: 'VERTICAL',
             aggregateFieldMetadataUniversalIdentifier:
               COBRANCA_VALOR_FIELD_UNIVERSAL_IDENTIFIER,
             aggregateOperation: AggregateOperations.SUM,
@@ -138,7 +142,7 @@ export default definePageLayout({
         {
           universalIdentifier: '52bebdbd-7cfc-49b2-9fad-48b2665e83c8',
           title: 'Margem Média das Cotações',
-          type: 'AGGREGATE_CHART',
+          type: 'GRAPH',
           objectUniversalIdentifier: COTACAO_UNIVERSAL_IDENTIFIER,
           gridPosition: { row: 2, column: 8, rowSpan: 2, columnSpan: 4 },
           configuration: {

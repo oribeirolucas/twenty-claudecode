@@ -23,6 +23,8 @@ export const COBRANCA_DATA_VENCIMENTO_FIELD_UNIVERSAL_IDENTIFIER =
   'ea91806f-fb1b-499d-8b27-0b2d7c3ef83f';
 export const COBRANCA_VALOR_FIELD_UNIVERSAL_IDENTIFIER =
   'c420add4-f8ab-46e6-902e-8d768acbc67b';
+export const COBRANCA_REFERENCIA_FIELD_UNIVERSAL_IDENTIFIER =
+  'eca12db0-b5b0-4e5a-a2e9-137c1066c058';
 
 export default defineObject({
   universalIdentifier: COBRANCA_UNIVERSAL_IDENTIFIER,
@@ -33,9 +35,21 @@ export default defineObject({
   description:
     'Uma cobrança do ciclo de recebimento de um processo: pagamento do órgão, comissão do representado ou atestado técnico.',
   icon: 'IconReceipt2',
+  // SELECT fields aren't valid label identifiers on this server — referencia is a plain TEXT
+  // field added just to hold the record's display label (e.g. an invoice/reference number).
   labelIdentifierFieldMetadataUniversalIdentifier:
-    COBRANCA_TIPO_FIELD_UNIVERSAL_IDENTIFIER,
+    COBRANCA_REFERENCIA_FIELD_UNIVERSAL_IDENTIFIER,
   fields: [
+    {
+      universalIdentifier: COBRANCA_REFERENCIA_FIELD_UNIVERSAL_IDENTIFIER,
+      type: FieldType.TEXT,
+      name: 'referencia',
+      label: 'Referência',
+      description: 'Número de referência ou identificação livre da cobrança',
+      icon: 'IconAbc',
+      isNullable: true,
+      defaultValue: null,
+    },
     {
       universalIdentifier: COBRANCA_TIPO_FIELD_UNIVERSAL_IDENTIFIER,
       type: FieldType.SELECT,

@@ -21,6 +21,8 @@ export const COBRANCA_STATUS_FIELD_UNIVERSAL_IDENTIFIER =
   '34b78952-5841-49b7-9d7d-ad19f1c4ecd6';
 export const COBRANCA_DATA_VENCIMENTO_FIELD_UNIVERSAL_IDENTIFIER =
   'ea91806f-fb1b-499d-8b27-0b2d7c3ef83f';
+export const COBRANCA_VALOR_FIELD_UNIVERSAL_IDENTIFIER =
+  'c420add4-f8ab-46e6-902e-8d768acbc67b';
 
 export default defineObject({
   universalIdentifier: COBRANCA_UNIVERSAL_IDENTIFIER,
@@ -65,7 +67,7 @@ export default defineObject({
       ],
     },
     {
-      universalIdentifier: 'c420add4-f8ab-46e6-902e-8d768acbc67b',
+      universalIdentifier: COBRANCA_VALOR_FIELD_UNIVERSAL_IDENTIFIER,
       type: FieldType.CURRENCY,
       name: 'valor',
       label: 'Valor',

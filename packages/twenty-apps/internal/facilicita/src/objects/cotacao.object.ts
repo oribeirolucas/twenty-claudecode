@@ -5,6 +5,8 @@ export const COTACAO_UNIVERSAL_IDENTIFIER =
 
 export const COTACAO_ITEM_FIELD_UNIVERSAL_IDENTIFIER =
   '4a87f9a9-6840-4c8e-910c-cf1052032183';
+export const COTACAO_MARGEM_PCT_FIELD_UNIVERSAL_IDENTIFIER =
+  'c26743ef-29df-479b-90bc-d2ebb783f6b4';
 
 export default defineObject({
   universalIdentifier: COTACAO_UNIVERSAL_IDENTIFIER,
@@ -115,7 +117,7 @@ export default defineObject({
       defaultValue: null,
     },
     {
-      universalIdentifier: 'c26743ef-29df-479b-90bc-d2ebb783f6b4',
+      universalIdentifier: COTACAO_MARGEM_PCT_FIELD_UNIVERSAL_IDENTIFIER,
       type: FieldType.NUMBER,
       name: 'margemPct',
       label: 'Margem (%)',

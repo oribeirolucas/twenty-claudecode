@@ -74,6 +74,52 @@ off the event payload, not yet investigated) and hard blocking of backward stage
 observação (a trigger fires *after* the write already landed, so it can only react, not block —
 that needs a different hook, out of scope here).
 
+### pt-BR localization
+
+Facilicita is built for a Brazilian company, so the workspace itself needs to be in
+Portuguese, not just this app's own objects (which were already authored with Portuguese
+labels from the start). `scripts/localize-pt-br.mjs` applies that pass over the metadata
+API: standard/system object labels (Company → Empresa, Person → Pessoa, Opportunity →
+Negócio, Task → Tarefa, Note → Nota, Dashboard → Painel, Workflow → Fluxo de Trabalho, plus
+the demo objects Twenty ships by default), ~210 field labels across those objects, the
+SELECT/MULTI_SELECT option labels users actually see in dropdowns and Kanban columns
+(Opportunity stage, Task status, Company/Person work policy, Pet species/traits), every
+table/Kanban view's display name, and the two navigation menu items whose text isn't
+derived from any object at all (the "Workflows" folder, the demo "Star History" page).
+
+This is a script and not a one-off, because Twenty has no `defineObject`-equivalent for
+*relabeling* standard objects the way it does for defining new ones — those labels are
+just per-workspace strings living in the metadata database, so without something checked
+into the repo this translation work would only exist as live database state with no way to
+reproduce it (e.g. after a workspace reset).
+
+```bash
+TWENTY_API_URL=http://localhost:3000 TWENTY_API_KEY=<workspace api key> node scripts/localize-pt-br.mjs
+```
+
+It's idempotent — re-running it against an already-localized workspace is a no-op except
+for the two mutation types (object labels, SELECT options) that don't compare against the
+current value before writing, which just re-write the same value harmlessly.
+
+**Known limitations, found by running it against a live workspace:**
+
+- Twenty's core system fields (`createdAt`, `updatedAt`, `deletedAt`, `position`,
+  `searchVector`, `createdBy`, `updatedBy` — present on every object) reject any label
+  change: `updateOneField` returns "System fields only allow updating: universalSettings,
+  isActive." There's no supported path to relabel these without forking Twenty core, so
+  columns like "Created by" / "Creation date" stay in English everywhere. This includes
+  `WorkspaceMember.name`, which trips the same rejection even though it isn't one of the
+  fields above (a pre-existing Twenty core validation quirk, unrelated to this script).
+- The frontend's own chrome text ("New Empresa", "New Negócio") comes from a Lingui
+  template (`New {label}`) that doesn't do Portuguese gender agreement — it can't
+  distinguish "Novo" from "Nova" from the object label alone. Fixing that is a Twenty core
+  i18n change, out of scope for an app built against the public APIs.
+- Inbox/email features (`message`, `messageThread`, `messageCampaign`, `messageList`, and
+  their join objects) were left untranslated — they're a secondary feature not central to
+  Facilicita's day-to-day CRM/pipeline usage, and translating their full field set didn't
+  seem worth the volume for what's primarily an unconfigured demo feature in this
+  workspace.
+
 ## Deliberately out of scope here
 
 Per the roadmap in the product spec, these are separate, later slices:
